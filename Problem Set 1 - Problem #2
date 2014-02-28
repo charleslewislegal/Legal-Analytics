@@ -1,0 +1,257 @@
+> wine = read.csv("http://www.nd.edu/~mclark19/learn/data/goodwine.csv")
+> 
+> summary(wine)
+ fixed.acidity    volatile.acidity
+ Min.   : 3.800   Min.   :0.0800  
+ 1st Qu.: 6.400   1st Qu.:0.2300  
+ Median : 7.000   Median :0.2900  
+ Mean   : 7.215   Mean   :0.3397  
+ 3rd Qu.: 7.700   3rd Qu.:0.4000  
+ Max.   :15.900   Max.   :1.5800  
+  citric.acid     residual.sugar  
+ Min.   :0.0000   Min.   : 0.600  
+ 1st Qu.:0.2500   1st Qu.: 1.800  
+ Median :0.3100   Median : 3.000  
+ Mean   :0.3186   Mean   : 5.443  
+ 3rd Qu.:0.3900   3rd Qu.: 8.100  
+ Max.   :1.6600   Max.   :65.800  
+   chlorides       free.sulfur.dioxide
+ Min.   :0.00900   Min.   :  1.00     
+ 1st Qu.:0.03800   1st Qu.: 17.00     
+ Median :0.04700   Median : 29.00     
+ Mean   :0.05603   Mean   : 30.53     
+ 3rd Qu.:0.06500   3rd Qu.: 41.00     
+ Max.   :0.61100   Max.   :289.00     
+ total.sulfur.dioxide    density      
+ Min.   :  6.0        Min.   :0.9871  
+ 1st Qu.: 77.0        1st Qu.:0.9923  
+ Median :118.0        Median :0.9949  
+ Mean   :115.7        Mean   :0.9947  
+ 3rd Qu.:156.0        3rd Qu.:0.9970  
+ Max.   :440.0        Max.   :1.0390  
+       pH          sulphates     
+ Min.   :2.720   Min.   :0.2200  
+ 1st Qu.:3.110   1st Qu.:0.4300  
+ Median :3.210   Median :0.5100  
+ Mean   :3.219   Mean   :0.5313  
+ 3rd Qu.:3.320   3rd Qu.:0.6000  
+ Max.   :4.010   Max.   :2.0000  
+    alcohol         quality     
+ Min.   : 8.00   Min.   :3.000  
+ 1st Qu.: 9.50   1st Qu.:5.000  
+ Median :10.30   Median :6.000  
+ Mean   :10.49   Mean   :5.818  
+ 3rd Qu.:11.30   3rd Qu.:6.000  
+ Max.   :14.90   Max.   :9.000  
+   color          white       
+ red  :1599   Min.   :0.0000  
+ white:4898   1st Qu.:1.0000  
+              Median :1.0000  
+              Mean   :0.7539  
+              3rd Qu.:1.0000  
+              Max.   :1.0000  
+   good     
+ Bad :2384  
+ Good:4113  
+            
+            
+            
+            
+> install.packages("caret")
+Installing package into ‘C:/Users/Charlie/Documents/R/win-library/3.0’
+(as ‘lib’ is unspecified)
+also installing the dependency ‘car’
+
+trying URL 'http://cran.rstudio.com/bin/windows/contrib/3.0/car_2.0-19.zip'
+Content type 'application/zip' length 1325008 bytes (1.3 Mb)
+opened URL
+downloaded 1.3 Mb
+
+trying URL 'http://cran.rstudio.com/bin/windows/contrib/3.0/caret_6.0-24.zip'
+Content type 'application/zip' length 3623728 bytes (3.5 Mb)
+opened URL
+downloaded 3.5 Mb
+
+package ‘car’ successfully unpacked and MD5 sums checked
+package ‘caret’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\Charlie\AppData\Local\Temp\RtmpwfrKEh\downloaded_packages
+> install.packages("nnet")
+Installing package into ‘C:/Users/Charlie/Documents/R/win-library/3.0’
+(as ‘lib’ is unspecified)
+trying URL 'http://cran.rstudio.com/bin/windows/contrib/3.0/nnet_7.3-7.zip'
+Content type 'application/zip' length 118758 bytes (115 Kb)
+opened URL
+downloaded 115 Kb
+
+package ‘nnet’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\Charlie\AppData\Local\Temp\RtmpwfrKEh\downloaded_packages
+> install.packages("randomForest")
+Installing package into ‘C:/Users/Charlie/Documents/R/win-library/3.0’
+(as ‘lib’ is unspecified)
+trying URL 'http://cran.rstudio.com/bin/windows/contrib/3.0/randomForest_4.6-7.zip'
+Content type 'application/zip' length 175353 bytes (171 Kb)
+opened URL
+downloaded 171 Kb
+
+package ‘randomForest’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\Charlie\AppData\Local\Temp\RtmpwfrKEh\downloaded_packages
+> install.packages("kernlab")
+Installing package into ‘C:/Users/Charlie/Documents/R/win-library/3.0’
+(as ‘lib’ is unspecified)
+trying URL 'http://cran.rstudio.com/bin/windows/contrib/3.0/kernlab_0.9-19.zip'
+Content type 'application/zip' length 2029405 bytes (1.9 Mb)
+opened URL
+downloaded 1.9 Mb
+
+package ‘kernlab’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\Charlie\AppData\Local\Temp\RtmpwfrKEh\downloaded_packages
+> 
+> library(doSNOW)
+Loading required package: foreach
+foreach: simple, scalable parallel programming from Revolution Analytics
+Use Revolution R for scalability, fault tolerance and more.
+http://www.revolutionanalytics.com
+Loading required package: iterators
+Loading required package: snow
+> registerDoSNOW(makeCluster(3, type = "SOCK"))
+> library(corrplot)
+> corrplot(cor(wine[, -c(13, 15)]), method = "number", tl.cex = 0.5)
+> 
+> library(caret)
+Loading required package: lattice
+Loading required package: ggplot2
+> set.seed(1234)
+> trainIndices = createDataPartition(wine$good, p = 0.8, list = F)
+> wanted = !colnames(wine) %in% c("free.sulfur.dioxide", "density", "quality", "color", "white")
+> wine_train = wine[trainIndices, wanted]
+> wine_test = wine[-trainIndices, wanted]
+> wine_trainplot = predict(preProcess(wine_train[,-10], method="range"), wine_train[,-10])
+> featurePlot(wine_trainplt, wine_train$good, "box")
+Error in is.data.frame(x) : object 'wine_trainplt' not found
+> featurePlot(wine_trainplot, wine_train$good, "box")
+> set.seed(1234)
+> cv_opts = trainControl(method="cv", number=10)
+> knn_opts = data.frame(.k=c(seq(3, 11, 2), 25, 51, 101))
+> results_knn = train(good~., data=wine_train, method="knn", preProcess="range", trControl=cv_opts, tuneGrid = knn_opts)
+Error in library(e1071) : there is no package called ‘e1071’
+> # Try Again
+> set.seed(1234)
+> cv_opts = trainControl(method="cv", number=10)
+> 
+> knn_opts = data.frame(.k=c(seq(3, 11, 2), 25, 51, 101)) 
+> results_knn = train(good~., data=wine_train, method="knn", preProcess="range", trControl=cv_opts, tuneGrid = knn_opts)
+Error in library(e1071) : there is no package called ‘e1071’
+> 
+> install.packages("e1071")
+Installing package into ‘C:/Users/Charlie/Documents/R/win-library/3.0’
+(as ‘lib’ is unspecified)
+trying URL 'http://cran.rstudio.com/bin/windows/contrib/3.0/e1071_1.6-2.zip'
+Content type 'application/zip' length 802966 bytes (784 Kb)
+opened URL
+downloaded 784 Kb
+
+package ‘e1071’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\Charlie\AppData\Local\Temp\RtmpwfrKEh\downloaded_packages
+> results_knn = train(good~., data=wine_train, method="knn", preProcess="range", trControl=cv_opts, tuneGrid = knn_opts)
+Loading required package: class
+> 
+> results_knn
+k-Nearest Neighbors 
+
+5199 samples
+   9 predictors
+   2 classes: 'Bad', 'Good' 
+
+Pre-processing: re-scaling to [0, 1] 
+Resampling: Cross-Validated (10 fold) 
+
+Summary of sample sizes: 4679, 4679, 4679, 4680, 4679, 4679, ... 
+
+Resampling results across tuning parameters:
+
+  k    Accuracy  Kappa  Accuracy SD  Kappa SD
+  3    0.747     0.448  0.0159       0.0366  
+  5    0.74      0.429  0.0129       0.0331  
+  7    0.748     0.445  0.0114       0.0271  
+  9    0.75      0.444  0.0179       0.0449  
+  11   0.751     0.448  0.0138       0.0353  
+  25   0.757     0.46   0.0167       0.0378  
+  51   0.75      0.44   0.015        0.0335  
+  101  0.745     0.425  0.0136       0.0357  
+
+Accuracy was used to select the optimal
+ model using  the largest value.
+The final value used for the model was k = 25. 
+> 
+> preds_knn = predict(results_knn, wine_test[,-10])
+> confusionMatrix(preds_knn, wine_test[,10], positive='Good')
+Confusion Matrix and Statistics
+
+          Reference
+Prediction Bad Good
+      Bad  280  129
+      Good 196  693
+                                         
+               Accuracy : 0.7496         
+                 95% CI : (0.7251, 0.773)
+    No Information Rate : 0.6333         
+    P-Value [Acc > NIR] : < 2.2e-16      
+                                         
+                  Kappa : 0.4445         
+ Mcnemar's Test P-Value : 0.0002512      
+                                         
+            Sensitivity : 0.8431         
+            Specificity : 0.5882         
+         Pos Pred Value : 0.7795         
+         Neg Pred Value : 0.6846         
+             Prevalence : 0.6333         
+         Detection Rate : 0.5339         
+   Detection Prevalence : 0.6849         
+      Balanced Accuracy : 0.7157         
+                                         
+       'Positive' Class : Good           
+                                         
+> results_nnet = train(good~., data=wine_train, method="avNNet", trControl=cv_opts, preProcess="range", tuneLength=5, trace=F, maxit=1000)
+Loading required package: nnet
+
+> results_nnet = train(good~., data=wine_train, method="nnet", trControl=cv_opts, preProcess="range", tuneLength=3, trace=F, maxit=1000)
+Error in e$fun(obj, substitute(ex), parent.frame(), e$data) : 
+  worker initialization failed: list(Accuracy = 0.744230769230769, Kappa = 0.437979456507606, .cell1 = 115, .cell2 = 76, .cell3 = 57, .cell4 = 272, size = 9, decay = 1e-04, bag = FALSE, Resample = "Fold04")NULL
+> 
+> dotPlot(varImp(results_knn))
+Loading required package: pROC
+Error in loadNamespace(name) : there is no package called ‘pROC’
+In addition: Warning message:
+In library(package, lib.loc = lib.loc, character.only = TRUE, logical.return = TRUE,  :
+  there is no package called ‘pROC’
+> install.packages("pROC")
+Installing package into ‘C:/Users/Charlie/Documents/R/win-library/3.0’
+(as ‘lib’ is unspecified)
+trying URL 'http://cran.rstudio.com/bin/windows/contrib/3.0/pROC_1.7.1.zip'
+Content type 'application/zip' length 780242 bytes (761 Kb)
+opened URL
+downloaded 761 Kb
+
+package ‘pROC’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\Charlie\AppData\Local\Temp\RtmpwfrKEh\downloaded_packages
+> dotPlot(varImp(results_knn))
+Loading required package: pROC
+Type 'citation("pROC")' for a citation.
+
+Attaching package: ‘pROC’
+
+The following objects are masked from ‘package:stats’:
+
+    cov, smooth, var
