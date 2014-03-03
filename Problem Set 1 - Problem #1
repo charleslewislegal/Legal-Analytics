@@ -196,3 +196,4 @@ get.results <- function(bool.vector) {
         length(bool.vector[which(bool.vector == TRUE)])/length(bool.vector))
     return(results)
 }
+# some output in worddoc
