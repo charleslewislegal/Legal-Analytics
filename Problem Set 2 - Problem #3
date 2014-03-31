@@ -42,7 +42,7 @@
 
 > # Prediction
 > DEXfat_pred <- predict(bodyfat_prune, newdata=bodyfat.test)
-> xlim <- range(bodyfat$Dexfat)
+> xlim <- range(bodyfat$DEXfat)
 > plot(DEXfat_pred ~ DEXfat, data=bodyfat.test, xlab="Observed", ylab="Predicted", ylim=xlim, xlim=xlim)
 
 > abline(a=0, b=1)
