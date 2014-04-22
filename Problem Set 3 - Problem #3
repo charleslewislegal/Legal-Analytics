@@ -1,0 +1,70 @@
+## Problem 3 - medium length
+## See word doc for addtional output
+## Some background packages may have already been installed
+
+## Z-scores
+```{r}
+ cars = read.delim('http://www.stat.berkeley.edu/classes/s133/data/cars.tab',stringsAsFactors=FALSE)
+ cars.use = cars[,-c(1,2)]
+ medians = apply(cars.use,2,median)
+ mads = apply(cars.use,2,mad)
+ cars.use = scale(cars.use,center=medians,scale=mads)
+```
+
+## wow, CPU usage?!?
+```{r}
+cars.dist = dist(cars.use)
+```
+## Cluster output
+```{r}
+ cars.hclust = hclust(cars.dist)
+```
+```{r}
+groups.3 = cutree(cars.hclust,3)
+table(groups.3)
+sapply(unique(groups.3),function(g)cars$Car[groups.3 == g])
+```
+```{r}
+groups.4 = cutree(cars.hclust,4)
+sapply(unique(groups.4),function(g)cars$Car[groups.4 == g])
+```
+## R in Action clustering
+## Load
+```{r}
+ data(wine, package="rattle")
+ head(wine)
+ df <- scale(wine[-1]) 
+```
+## Example
+```{r}
+ wssplot <- function(data, nc=15, seed=1234){
+   wss <- (nrow(data)-1)*sum(apply(data,2,var))
+   for (i in 2:nc){
+     set.seed(seed)
+     wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+   plot(1:nc, wss, type="b", xlab="Number of Clusters",
+       ylab="Within groups sum of squares")}
+```
+
+```{r fig.width=7, fig.height=6}
+ wssplot(df)
+```
+```{r}
+ nc <- NbClust(df, min.nc=2, max.nc=15, method="kmeans")
+```
+
+```{r}
+ table(nc$Best.n[1,])
+```
+## Density
+```{r fig.width=7, fig.height=6}
+barplot(table(nc$Best.n[1,]), 
+        xlab="Numer of Clusters", ylab="Number of Criteria",
+        main="Number of Clusters Chosen by 26 Criteria")
+```
+## Fitting K-means
+```{r}
+ fit.km <- kmeans(df, 3, nstart=25) 
+ fit.km$size
+ aggregate(wine[-1], by=list(cluster=fit.km$cluster), mean)
+```
