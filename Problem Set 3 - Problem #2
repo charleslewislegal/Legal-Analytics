@@ -1,0 +1,124 @@
+## PlyR Practice
+## This is a pretty lengthy problem.
+## Relevant output charts in additional word doc
+
+## Import 
+```{r}
+gdURL <- "http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt"
+gDat <- read.delim(file = gdURL)
+gDatTable <- data.table(gDat)
+```
+```{r}
+str(gDat)
+```
+
+## Testing
+```{r}
+(snippet <- subset(gDat, country == "Canada"))
+```
+
+```{r}
+(maxLeByCont <- ddply(gDat, ~ continent, summarize, maxLifeExp = max(lifeExp)))
+```
+```{r}
+(minGDPByCont <- ddply(gDat, ~ continent, summarize, minGDP = min(gdpPercap)))
+```
+```{r}
+ddply(gDat, ~continent, summarize, nUniqCountries = length(unique(country)))
+```
+```{r}
+ddply(gDat, ~ continent,
+    function(x) return(c(nUniqCountries = length(unique(x$country)))))
+```
+## Keep following Author but test some samples
+```{r}
+ddply(gDat, ~ continent, summarize,
+      minLifeExp = min(lifeExp), maxLifeExp = max(lifeExp),
+      medGdpPercap = median(gdpPercap))
+```
+```{r}
+ jCountry <- "France"  
+ (jDat <- subset(gDat, country == jCountry))
+```
+## Plot the sample
+```
+{r fig.width=7, fig.height=6}
+xyplot(lifeExp ~ year, jDat, type = c("p", "r"))
+```
+
+## Model with intersect adjustment
+```{r}
+ jFit <- lm(lifeExp ~ year, jDat)
+ summary(jFit)
+ 
+ (yearMin <- min(gDat$year))
+ jFit <- lm(lifeExp ~ I(year - yearMin), jDat)
+ summary(jFit)
+```
+
+## Additional Observations
+```{r}
+ class(jFit)
+ mode(jFit)
+ names(jFit)
+ jFit$coefficients
+```
+
+```{r}
+jFun <- function(x) coef(lm(lifeExp ~ I(year - yearMin), x))
+jFun(jDat)
+jFun <- function(x) {
+  estCoefs <- coef(lm(lifeExp ~ I(year - yearMin), x))
+  names(estCoefs) <- c("intercept", "slope")
+  return(estCoefs)
+  }
+jFun(jDat)
+```
+
+## 3 Test Countries
+```{r}
+ jFun(subset(gDat, country == "Canada"))
+ jFun(subset(gDat, country == "Uruguay"))
+ jFun(subset(gDat, country == "India"))
+```
+
+
+```{r}
+jCoefs <- ddply(gDat, ~country, jFun)
+str(jCoefs)
+```
+## Print and fix how it looks later
+```{r}
+ foo <- jCoefs[sample(nrow(jCoefs), size = 15), ]
+ foo <- xtable(foo)
+```
+```{r,results='asis'}
+ print(foo, type = "html", include.rownames = FALSE)
+```
+
+## Make it look better
+```{r}
+jCoefs <- ddply(gDat, ~country + continent, jFun)
+str(jCoefs)
+foo <- jCoefs[sample(nrow(jCoefs), size = 15), ]
+foo <- arrange(foo, intercept)
+foo <- xtable(foo)
+```
+
+```{r,results='asis'}
+print(foo, type = "html", include.rownames = FALSE)
+```
+
+## Q&A
+```{r}
+jFunTwoArgs <- function(x, cvShift = 0) 
+{
+  estCoefs <- coef(lm(lifeExp ~ I(year - cvShift), x))
+  names(estCoefs) <- c("intercept", "slope")
+  return(estCoefs)
+}
+jCoefsBest <- ddply(gDat, ~country, jFunTwoArgs, cvShift = min(gDat$year))
+head(jCoefsBest)
+
+## See word doc for a few outputs
+```
