@@ -8,3 +8,17 @@ qplot(data=statecrimedata,x=ME,y=VI,log="xy",color=MU,facets = ~MU) #pretty plot
 addgg <- qplot(data=statecrimedata, x=ME, y=VI, log="xy", color=MU)
 addgg <- addgg + stat_smooth(method="lm")
 addgg
+qplot(data=statecrimedata,x=PO,y=VI,log="xy",color=MU,facets = ~MU)
+> addgg2 <- qplot(data=statecrimedata, x=PO, y=VI, log="xy", color=MU)
+> addgg2 <- addgg2 + stat_smooth(method="lm")
+> addgg2
+> 
+> qplot(data=statecrimedata,x=HS,y=VI,log="xy",color=MU,facets = ~MU)
+> addgg3 <- qplot(data=statecrimedata,x=HS,y=VI,log="xy",color=MU)
+> addgg3 <- addgg3 + stat_smooth(method="lm")
+> addgg3
+> 
+> qplot(data=statecrimedata,x=WH,y=VI,log="xy",color=MU,facets = ~MU)
+> addgg4 <- qplot(data=statecrimedata,x=WH,y=VI,log="xy",color=MU)
+> addgg4 <- addgg4 + stat_smooth(method="lm")
+> addgg4
