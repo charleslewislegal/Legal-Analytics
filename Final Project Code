@@ -1,0 +1,6 @@
+library(ggplot2)
+dev.off()
+qplot(data=statecrimedata,x=VI,main="Histogram of Violent Crimes")
+qplot(data=statecrimedata, x=ME, y=VI, log="xy", color=STATE)
+# Setting up after reading in statecrimedata
+
