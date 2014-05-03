@@ -22,3 +22,25 @@ qplot(data=statecrimedata,x=PO,y=VI,log="xy",color=MU,facets = ~MU)
 > addgg4 <- qplot(data=statecrimedata,x=WH,y=VI,log="xy",color=MU)
 > addgg4 <- addgg4 + stat_smooth(method="lm")
 > addgg4
+
+# Murder Rate Correlations
+
+> qplot(data=statecrimedata,x=ME,y=MU,log="xy",color=VI,facets = ~VI)
+> MUgg <- qplot(data=statecrimedata,x=ME,y=MU,log="xy",color=VI)
+> MUgg <- MUgg + stat_smooth(method="lm")
+> MUgg
+> 
+> qplot(data=statecrimedata,x=PO,y=MU,log="xy",color=VI,facets = ~VI)
+> MUgg2 <- qplot(data=statecrimedata,x=PO,y=MU,log="xy",color=VI)
+> MUgg2 <- MUgg2 + stat_smooth(method="lm")
+> MUgg2
+> 
+> qplot(data=statecrimedata,x=HS,y=MU,log="xy",color=VI,facets = ~VI)
+> MUgg3 <- qplot(data=statecrimedata,x=HS,y=MU,log="xy",color=VI)
+> MUgg3 <- MUgg3 + stat_smooth(method="lm")
+> MUgg3
+> 
+> qplot(data=statecrimedata,x=WH,y=MU,log="xy",color=VI,facets = ~VI)
+> MUgg4 <- qplot(data=statecrimedata,x=WH,y=MU,log="xy",color=VI)
+> MUgg4 <- MUgg4 + stat_smooth(method="lm")
+> MUgg4
