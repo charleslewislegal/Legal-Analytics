@@ -4,3 +4,7 @@ qplot(data=statecrimedata,x=VI,main="Histogram of Violent Crimes")
 qplot(data=statecrimedata, x=ME, y=VI, log="xy", color=STATE)
 # Setting up after reading in statecrimedata
 
+qplot(data=statecrimedata,x=ME,y=VI,log="xy",color=MU,facets = ~MU) #pretty plots clustered by number of murders
+addgg <- qplot(data=statecrimedata, x=ME, y=VI, log="xy", color=MU)
+addgg <- addgg + stat_smooth(method="lm")
+addgg
