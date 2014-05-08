@@ -1,46 +1,172 @@
-library(ggplot2)
-dev.off()
-qplot(data=statecrimedata,x=VI,main="Histogram of Violent Crimes")
-qplot(data=statecrimedata, x=ME, y=VI, log="xy", color=STATE)
-# Setting up after reading in statecrimedata
+> setwd("C:/Users/Charlie/Desktop/legal analytics")
+> read.csv("crime2005.csv")
+> statecrimedata <- read.csv("crime2005.csv")
 
-qplot(data=statecrimedata,x=ME,y=VI,log="xy",color=MU,facets = ~MU) #pretty plots clustered by number of murders
-addgg <- qplot(data=statecrimedata, x=ME, y=VI, log="xy", color=MU)
-addgg <- addgg + stat_smooth(method="lm")
-addgg
-qplot(data=statecrimedata,x=PO,y=VI,log="xy",color=MU,facets = ~MU)
+# Graphs of relation of factors to Violent Crime Rate
+> library(ggplot2)
+> dev.off()
+> qplot(data=statecrimedata,x=VI,main="Histogram of Violent Crimes")
+> qplot(data=statecrimedata, x=ME, y=VI, log="xy", color=STATE)
+
+> qplot(data=statecrimedata,x=ME,y=VI,log="xy",color=MU,facets = ~MU) #pretty plots clustered by number of murders
+> addgg <- qplot(data=statecrimedata, x=ME, y=VI, log="xy", color=MU)
+> addgg <- addgg + stat_smooth(method="lm")
+> addgg
+
+> qplot(data=statecrimedata,x=PO,y=VI,log="xy",color=MU,facets = ~MU)
 > addgg2 <- qplot(data=statecrimedata, x=PO, y=VI, log="xy", color=MU)
 > addgg2 <- addgg2 + stat_smooth(method="lm")
 > addgg2
-> 
+
 > qplot(data=statecrimedata,x=HS,y=VI,log="xy",color=MU,facets = ~MU)
 > addgg3 <- qplot(data=statecrimedata,x=HS,y=VI,log="xy",color=MU)
 > addgg3 <- addgg3 + stat_smooth(method="lm")
 > addgg3
-> 
+
 > qplot(data=statecrimedata,x=WH,y=VI,log="xy",color=MU,facets = ~MU)
 > addgg4 <- qplot(data=statecrimedata,x=WH,y=VI,log="xy",color=MU)
 > addgg4 <- addgg4 + stat_smooth(method="lm")
 > addgg4
 
 # Murder Rate Correlations
-
 > qplot(data=statecrimedata,x=ME,y=MU,log="xy",color=VI,facets = ~VI)
 > MUgg <- qplot(data=statecrimedata,x=ME,y=MU,log="xy",color=VI)
 > MUgg <- MUgg + stat_smooth(method="lm")
 > MUgg
-> 
+
 > qplot(data=statecrimedata,x=PO,y=MU,log="xy",color=VI,facets = ~VI)
 > MUgg2 <- qplot(data=statecrimedata,x=PO,y=MU,log="xy",color=VI)
 > MUgg2 <- MUgg2 + stat_smooth(method="lm")
 > MUgg2
-> 
+
 > qplot(data=statecrimedata,x=HS,y=MU,log="xy",color=VI,facets = ~VI)
 > MUgg3 <- qplot(data=statecrimedata,x=HS,y=MU,log="xy",color=VI)
 > MUgg3 <- MUgg3 + stat_smooth(method="lm")
 > MUgg3
-> 
+
 > qplot(data=statecrimedata,x=WH,y=MU,log="xy",color=VI,facets = ~VI)
 > MUgg4 <- qplot(data=statecrimedata,x=WH,y=MU,log="xy",color=VI)
 > MUgg4 <- MUgg4 + stat_smooth(method="lm")
 > MUgg4
+
+# Regression of Factors on Violent Crime
+> reg <- lm(statecrimedata$VI ~ statecrimedata$ME + statecrimedata$HS + statecrimedata$WH + statecrimedata$PO, data=statecrimedata)
+> summary(reg)
+
+# Display
+# Call:
+# lm(formula = statecrimedata$VI ~ statecrimedata$ME + statecrimedata$HS + 
+#    statecrimedata$WH + statecrimedata$PO, data = statecrimedata)
+#
+#Residuals:
+#    Min      1Q  Median      3Q     Max 
+# -498.20  -95.02   -2.50   69.13  419.53 
+#
+#Coefficients:
+#                  Estimate Std. Error t value Pr(>|t|)    
+#(Intercept)       -613.019    912.158  -0.672 0.504911    
+#statecrimedata$ME    6.417      1.690   3.796 0.000428 ***
+#statecrimedata$HS    7.313      9.027   0.810 0.422034    
+#statecrimedata$WH   -5.259      1.987  -2.647 0.011084 *  
+#statecrimedata$PO   39.166     11.115   3.524 0.000974 ***
+
+> coefficients(reg)
+      (Intercept) statecrimedata$ME statecrimedata$HS statecrimedata$WH 
+      -613.019054          6.417396          7.313028         -5.258525 
+statecrimedata$PO 
+        39.165858 
+> fitted(reg)
+         1          2          3          4          5          6          7          8 
+ 408.62053  506.21175  349.47484  575.64174  592.61567  386.05723  402.34446  364.78632 
+         9         10         11         12         13         14         15         16 
+ 544.31521  543.36168  768.19557  337.54746  500.58204  306.34138  206.47829  308.39578 
+        17         18         19         20         21         22         23         24 
+ 424.06185  741.50098  445.28532  478.41425   69.50860  417.95802  264.08006  362.91172 
+        25         26         27         28         29         30         31         32 
+ 627.10367  315.44555  394.35012  243.33488  339.44452  125.43124  487.51846  608.79329 
+        33         34         35         36         37         38         39         40 
+ 512.20164  603.50536  448.09789  501.44345  433.09755  382.21427  416.56011  470.01947 
+        41         42         43         44         45         46         47         48 
+ 175.49675  392.17247  564.06380  422.89169  372.33804   37.25883  430.04411  282.36119 
+        49         50         51 
+ 380.90608  264.74914 1188.46568 
+ > residuals(reg)
+          1           2           3           4           5           6           7 
+ 184.379466  -76.211752  106.525155  -62.641744  -13.615670  -41.057225  -94.344463 
+          8           9          10          11          12          13          14 
+ 293.213680  185.684791  -89.361680 -498.195565  -94.547464   56.417959   46.658617 
+         15          16          17          18          19          20          21 
+  65.521706   87.604223 -162.061848  -95.500977   23.714679  225.585752   39.491405 
+         22          23          24          25          26          27          28 
+  93.041978   -1.080058  110.088276 -301.103674   49.554445   60.649881 -165.334878 
+         29          30          31          32          33          34          35 
+ -50.444517   23.568765 -121.518458   56.206714  101.798364 -138.505357 -115.097887 
+         36          37          38          39          40          41          42 
+   4.556546 -137.097548   15.785730 -130.560111  323.980527   -2.496752  295.827529 
+         43          44          45          46          47          48          49 
+ -11.063803 -173.891685  -96.338037   72.741170  -83.044114  -61.361193 -122.906079 
+         50          51 
+  -2.749136  419.534315  # Number 51 -> DC
+
+#Regression of Murder to factors
+> reg2 <- lm(statecrimedata$MU ~ statecrimedata$ME + statecrimedata$HS + statecrimedata$WH + statecrimedata$PO, data=statecrimedata)
+> summary(reg2)
+
+Call:
+lm(formula = statecrimedata$MU ~ statecrimedata$ME + statecrimedata$HS + 
+    statecrimedata$WH + statecrimedata$PO, data = statecrimedata)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-11.4720  -2.0621  -0.0292   1.4213  15.7656 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       -61.60346   21.09113  -2.921  0.00539 ** 
+statecrimedata$ME   0.10573    0.03909   2.705  0.00954 ** 
+statecrimedata$HS   0.66178    0.20872   3.171  0.00271 ** 
+statecrimedata$WH  -0.14475    0.04594  -3.151  0.00286 ** 
+statecrimedata$PO   1.48652    0.25700   5.784 6.09e-07 ***
+---
+
+> coefficients(reg2)
+      (Intercept) statecrimedata$ME statecrimedata$HS statecrimedata$WH 
+      -61.6034648         0.1057342         0.6617775        -0.1447523 
+statecrimedata$PO 
+        1.4865211 
+
+> fitted(reg2)
+         1          2          3          4          5          6          7          8 
+ 6.6687377  8.8147037  2.5789053  8.5856144  6.6139498  3.5465020  3.6305828  1.8315744 
+         9         10         11         12         13         14         15         16 
+ 7.4375076  8.7934242 13.4719546  4.3315938  6.2643835  1.8988966  0.7900449  2.8546681 
+        17         18         19         20         21         22         23         24 
+ 6.4528983 13.5523572  4.1245658  5.0708600 -2.4555381  5.4663689  2.3009178  4.3269688 
+        25         26         27         28         29         30         31         32 
+13.9895298  6.4782111  3.4791668  2.6478316  5.0548574 -1.5879398  5.0291415 10.9279501 
+        33         34         35         36         37         38         39         40 
+ 6.1732833  9.3726587  6.5233649  8.7397551  5.8184435  3.5042230  0.9844493  7.0291622 
+        41         42         43         44         45         46         47         48 
+-0.3469021  4.0582010  6.3523468  5.6638411  3.7445845 -1.9877797  5.8243292  2.0303205 
+        49         50         51 
+ 6.0693438  3.2407485 28.2344358 
+
+> residuals(reg2)
+           1            2            3            4            5            6 
+ -0.66873773  -1.81470371   3.42109472  -0.58561436   0.38605022   0.45349802 
+           7            8            9           10           11           12 
+ -0.63058282   1.16842556  -2.43750760  -0.79342419 -11.47195462  -2.33159377 
+          13           14           15           16           17           18 
+  0.73561651   4.10110340   1.20995512   2.14533188  -1.45289834  -0.55235722 
+          19           20           21           22           23           24 
+ -2.12456584   4.92914000   3.45553809   0.53363111   0.69908224   0.67303122 
+          25           26           27           28           29           30 
+ -4.98952976  -3.47821107   2.52083317  -0.64783160  -2.05485740   2.58793985 
+          31           32           33           34           35           36 
+ -0.02914146  -4.92795006   2.82671669  -4.37265868  -1.52336491  -2.73975515 
+          37           38           39           40           41           42 
+ -3.81844346   1.49577702   1.01555065  -0.02916225   1.34690207   2.94179905 
+          43           44           45           46           47           48 
+ -0.35234684  -2.66384110   2.25541546   3.98777968  -2.82432915   0.96967949 
+          49           50           51 
+ -2.06934383  -0.24074846  15.76556417
